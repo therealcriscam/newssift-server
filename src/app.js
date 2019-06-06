@@ -4,22 +4,29 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
+const authRouter = require('./auth/auth-router');
+const usersRouter = require('./users/users-router');
+const subscriptionsRouter = require('./subscriptions/subscriptions-router')
 
 const app = express();
 
-const morganOption = (process.env.NODE_ENV === 'production')
+const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
   : 'common';
 
 app.use(morgan(morganOption));
 
 app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
+  cors(
+    {origin: CLIENT_ORIGIN}
+  )
 );
 
 app.use(helmet());
+
+app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/subscriptions', subscriptionsRouter)
 
 app.get('/api/', (req, res) => {
   res
