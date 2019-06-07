@@ -32,6 +32,15 @@ subscriptionsRouter
       })
       .catch(next)
   })
-  .get(requireAuth)
+  .get(requireAuth, (req, res, next) => {
+    SubscriptionsService.getUserSubscriptions(
+      req.app.get('db'),
+      req.user.id
+    )
+      .then(subscriptions => {
+        res.json(subscriptions)
+      })
+      .catch(next)
+  })
 
 module.exports = subscriptionsRouter;
